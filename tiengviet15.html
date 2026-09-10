@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề Kiểm Tra Tiếng Việt Lớp 3 - Cẩm Tiên</title>
+    <style>
+        :root {
+            --primary-color: #205471; /* Xanh Na Uy chủ đạo */
+            --primary-dark: #14384d;
+            --secondary-color: #e8f1f5;
+            --text-color: #333333;
+            --border-color: #b0c4de;
+            --bg-color: #f4f8fb;
+            --success-color: #2e7d32;
+            --error-color: #c62828;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 10px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(32, 84, 113, 0.15);
+        }
+
+        /* Màn hình mở đầu */
+        #welcome-screen {
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        #welcome-screen h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        #welcome-screen p {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* Khung tên thí sinh hình chữ nhật bo tròn góc (Xanh Na Uy) */
+        .student-greeting {
+            font-size: 18px;
+            color: var(--primary-dark);
+            font-weight: bold;
+            margin: 0 auto 25px auto;
+            background: #e8f1f5;
+            border: 2px solid var(--primary-color);
+            padding: 12px 25px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(32, 84, 113, 0.1);
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Phần thi chính (ẩn ban đầu) */
+        #quiz-screen {
+            display: none;
+        }
+
+        /* Đồng hồ đếm ngược cố định linh hoạt trên mọi màn hình */
+        #timer-box {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .exam-header {
+            text-align: center;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .exam-header h2 {
+            color: var(--primary-color);
+            margin: 0 0 5px 0;
+            font-size: 20px;
+        }
+
+        .student-info-display {
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-top: 5px;
+            font-size: 15px;
+        }
+
+        .part-title {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-left: 5px solid var(--primary-color);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .instruction {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .question-card {
+            background: #fafcfe;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .question-title {
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        /* Làm nổi bật câu đọc trong ngoặt cho phần 3 */
+        .highlight-quote {
+            color: #1a445c;
+            font-weight: 800;
+            background-color: #f0f7fb;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        /* Lưới lựa chọn đáp án - Tự động đổi thành 1 cột trên điện thoại */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background: white;
+            border: 1px solid #d1d9e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+        }
+
+        .option-item:hover {
+            background-color: #f0f4f8;
+            border-color: var(--primary-color);
+        }
+
+        .option-item input {
+            margin-right: 10px;
+            accent-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        /* Định dạng đặc biệt cho Phần 3 - Khung đáp án */
+        .blank-box {
+            background-color: #e8f1f5;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 14px 16px;
+            min-height: 30px;
+            margin-bottom: 14px;
+            color: var(--primary-dark);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            box-shadow: inset 0 2px 4px rgba(32, 84, 113, 0.06);
+        }
+
+        .blank-box::before {
+            content: "Đáp án: ";
+            color: var(--primary-color);
+            font-weight: 800;
+            margin-right: 8px;
+        }
+
+        .part3-option {
+            padding: 10px 14px;
+            background: white;
+            border: 1px solid #d1d9e0;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+            font-size: 15px;
+        }
+
+        .part3-option:hover {
+            background-color: #f0f4f8;
+            border-color: var(--primary-color);
+        }
+
+        .part3-option.selected {
+            background-color: #e3eff6;
+            border-color: var(--primary-color);
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        .submit-container {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        /* Màn hình kết quả */
+        #result-screen {
+            display: none;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .result-header h2 {
+            color: var(--primary-color);
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .score-highlight {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--primary-color);
+            background: #e8f1f5;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            margin: 10px 0;
+            border: 2px solid var(--primary-color);
+        }
+
+        .time-report {
+            background: var(--secondary-color);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .time-report div span {
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        .history-section h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 6px;
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
+        .history-card {
+            background: #fafcfe;
+            border-left: 5px solid #ccc;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .history-card.correct {
+            border-left-color: var(--success-color);
+            background-color: #f4fbf4;
+        }
+
+        .history-card.incorrect {
+            border-left-color: var(--error-color);
+            background-color: #fdf4f4;
+        }
+
+        .history-q-title {
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .history-detail {
+            font-size: 13px;
+            margin: 3px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .badge-correct {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+        }
+
+        .badge-incorrect {
+            background-color: #ffebee;
+            color: var(--error-color);
+        }
+
+        /* Responsive Media Queries cho màn hình nhỏ (Điện thoại) */
+        @media (max-width: 600px) {
+            body {
+                padding: 5px;
+            }
+            .container {
+                padding: 12px;
+            }
+            .options-grid {
+                grid-template-columns: 1fr; /* Đưa về 1 cột trên điện thoại để dễ bấm */
+            }
+            #welcome-screen h1 {
+                font-size: 20px;
+            }
+            .exam-header h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Đồng hồ đếm ngược -->
+    <div id="timer-box" style="display: none;">
+        ⏱️ <span id="time-left">30:00</span>
+    </div>
+
+    <div class="container">
+        <!-- MÀN HÌNH MỞ ĐẦU -->
+        <div id="welcome-screen">
+            <h1>BÀI KIỂM TRA TIẾNG VIỆT LỚP 3</h1>
+            <p><strong>Nội dung:</strong> Ôn tập từ chỉ hoạt động, đặc điểm và sự vật</p>
+            <p>Thời gian làm bài: <strong>30 phút</strong></p>
+            
+            <div class="student-greeting">
+                Học sinh: Cẩm Tiên 🌸
+            </div>
+
+            <div>
+                <button class="btn" onclick="startQuiz()">BẮT ĐẦU LÀM BÀI</button>
+            </div>
+        </div>
+
+        <!-- MÀN HÌNH LÀM BÀI -->
+        <div id="quiz-screen">
+            <div class="exam-header">
+                <h2>PHIẾU ÔN TẬP TIẾNG VIỆT LỚP 3</h2>
+                <div class="student-info-display">Học sinh: Cẩm Tiên</div>
+            </div>
+
+            <!-- PHẦN 1 -->
+            <div class="part-title">PHẦN 1. TRẮC NGHIỆM NHIỀU ĐÁP ÁN ĐÚNG</div>
+            <div class="instruction">Các câu hỏi từ câu 1 đến câu 3 có thể chọn nhiều từ đúng. <strong>Cho các từ: mới, cười, lớn, trong xanh, cặp sách, bay, quần áo, trẻ, lá cờ, reo, đo, đỏ tươi.</strong></div>
+            <div id="part1-container"></div>
+
+            <!-- PHẦN 2 -->
+            <div class="part-title">PHẦN 2. TRẮC NGHIỆM KHÁCH QUAN</div>
+            <div class="instruction">Chọn 1 đáp án đúng nhất cho mỗi câu hỏi dưới đây.</div>
+            <div id="part2-container"></div>
+
+            <!-- PHẦN 3 -->
+            <div class="part-title">PHẦN 3. CHỌN CÂU PHÙ HỢP</div>
+            <div class="instruction">Bé bấm chọn phương án thích hợp, nội dung sẽ tự động điền vào ô trống bên dưới câu hỏi.</div>
+            <div id="part3-container"></div>
+
+            <div class="submit-container">
+                <button class="btn" onclick="submitQuiz()">NỘP BÀI</button>
+            </div>
+        </div>
+
+        <!-- MÀN HÌNH KẾT QUẢ -->
+        <div id="result-screen">
+            <div class="result-header">
+                <h2>KẾT QUẢ BÀI KIỂM TRA</h2>
+                <p>Học sinh: <strong style="color: var(--primary-color);"> Cẩm Tiên</strong></p>
+                <div class="score-highlight" id="res-score">Điểm số: 0.0 / 10.0</div>
+            </div>
+
+            <!-- Bảng báo cáo thời gian -->
+            <div class="time-report">
+                <div>🕒 Giờ vào làm: <span id="start-time-text">--:--:--</span></div>
+                <div>🏁 Giờ nộp bài: <span id="submit-time-text">--:--:--</span></div>
+                <div>⏳ Thời gian làm bài: <span id="duration-text">0 phút 0 giây</span></div>
+            </div>
+
+            <!-- Lịch sử chi tiết bài làm -->
+            <div class="history-section">
+                <h3>LỊCH SỬ BÀI LÀM</h3>
+                <div id="history-details-container"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 25px;">
+                <button class="btn" onclick="location.reload()">LÀM LẠI</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let part1Data = [
+            {
+                id: 1,
+                title: "Câu 1. Từ nào là từ chỉ sự vật?",
+                options: ["mới", "cười", "lớn", "trong xanh", "cặp sách", "bay", "quần áo", "trẻ", "lá cờ", "reo", "đo", "đỏ tươi"],
+                correct: ["cặp sách", "quần áo", "lá cờ"]
+            },
+            {
+                id: 2,
+                title: "Câu 2. Từ nào là từ chỉ hoạt động?",
+                options: ["mới", "cười", "lớn", "trong xanh", "cặp sách", "bay", "quần áo", "trẻ", "lá cờ", "reo", "đo", "đỏ tươi"],
+                correct: ["cười", "bay", "reo", "đo"]
+            },
+            {
+                id: 3,
+                title: "Câu 3. Từ nào là từ chỉ đặc điểm?",
+                options: ["mới", "cười", "lớn", "trong xanh", "cặp sách", "bay", "quần áo", "trẻ", "lá cờ", "reo", "đo", "đỏ tươi"],
+                correct: ["mới", "lớn", "trong xanh", "trẻ", "đỏ tươi"]
+            }
+        ];
+
+        let part2Data = [
+            {
+                id: 4,
+                title: "Câu 4. Trong các câu sau, câu nào là câu chỉ hoạt động?",
+                options: [
+                    "Chiếc cặp này là món quà của mẹ tặng.",
+                    "Bầu trời hôm nay thật cao và xanh.",
+                    "Con mèo nhà em có bộ lông rất mượt.",
+                    "Bạn Lan đang chăm chú đọc sách."
+                ],
+                correctIndex: 3
+            },
+            {
+                id: 5,
+                title: "Câu 5. Bộ phận trả lời cho câu hỏi 'Làm gì?' trong câu “Đàn ong thợ chăm chỉ hút mật hoa.” là:",
+                options: [
+                    "Đàn ong thợ chăm chỉ",
+                    "Đàn ong thợ",
+                    "chăm chỉ hút mật hoa",
+                    "hút mật hoa"
+                ],
+                correctIndex: 3
+            },
+            {
+                id: 6,
+                title: "Câu 6. Xác định từ ngữ chỉ hoạt động trong câu: 'Mấy chú chim sẻ ríu rít chuyền cành tìm mồi.'",
+                options: [
+                    "Mấy chú chim sẻ",
+                    "ríu rít",
+                    "chim sẻ",
+                    "chuyền cành tìm mồi"
+                ],
+                correctIndex: 3
+            },
+            {
+                id: 7,
+                title: "Câu 7. Câu nào dưới đây là câu chỉ đặc điểm?",
+                options: [
+                    "Em đang chăm chú đọc sách.",
+                    "Cây bàng ở sân trường rất cao và tán lá rộng.",
+                    "Cô giáo đang giảng bài say sưa.",
+                    "Chúng em cùng nhau nhặt rác sân trường."
+                ],
+                correctIndex: 1
+            },
+            {
+                id: 8,
+                title: "Câu 8. Bộ phận trả lời cho câu hỏi 'Thế nào?' trong câu: 'Dòng sông quê tôi uốn lượn hiền hòa.' là gì?",
+                options: [
+                    "Dòng sông quê tôi",
+                    "Dòng sông",
+                    "uốn lượn hiền hòa",
+                    "hiền hòa"
+                ],
+                correctIndex: 3
+            },
+            {
+                id: 9,
+                title: "Câu 9. Trong các câu sau, câu nào không phải là câu chỉ đặc điểm?",
+                options: [
+                    "Chú mèo nhà em có bộ lông màu vàng óng mượt.",
+                    "Đêm nay trăng sáng vằng vặc trên bầu trời.",
+                    "Bạn Lan đang học bài chăm chỉ.",
+                    "Những bông hoa hồng trong vườn nở rộ rất đẹp."
+                ],
+                correctIndex: 2
+            },
+            {
+                id: 10,
+                title: "Câu 10. Trong câu 'Đàn gà con đang tìm mồi dưới tán cây bàng.', từ nào là từ chỉ con vật?",
+                options: [
+                    "Đàn gà con",
+                    "Tìm mồi",
+                    "Tán cây",
+                    "Dưới"
+                ],
+                correctIndex: 0
+            },
+            {
+                id: 11,
+                title: "Câu 11. Từ nào dưới đây không thuộc nhóm từ chỉ người?",
+                options: [
+                    "Học sinh",
+                    "Bác nông dân",
+                    "Bệnh viện",
+                    "Cô giáo"
+                ],
+                correctIndex: 2
+            },
+            {
+                id: 12,
+                title: "Câu 12. Xác định các từ chỉ sự vật trong câu: 'Mẹ mua cho em một chiếc cặp sách mới.'",
+                options: [
+                    "Mẹ, em, chiếc cặp sách",
+                    "Mua, mới",
+                    "Cho, chiếc",
+                    "Mẹ, mua, cặp sách"
+                ],
+                correctIndex: 0
+            }
+        ];
+
+        let part3Data = [
+            {
+                id: 13,
+                title: "Câu 13. Câu nào bên dưới phù hợp để trả lời cho câu hỏi: <span class='highlight-quote'>'Em thường làm những việc gì giúp ông bà sau giờ học?'</span>",
+                options: [
+                    "Em rất yêu quý và kính trọng ông bà của mình.",
+                    "Em thường quét nhà, gấp quần áo và nhặt rau giúp ông bà.",
+                    "Ông em là một giáo viên tiểu học rất tận tụy.",
+                    "Sau giờ học, em cảm thấy rất mệt và muốn đi ngủ."
+                ],
+                correctText: "Em thường quét nhà, gấp quần áo và nhặt rau giúp ông bà."
+            },
+            {
+                id: 14,
+                title: "Câu 14. Câu nào bên dưới phù hợp để trả lời cho câu hỏi: <span class='highlight-quote'>'Cây bàng ở sân trường em thế nào?'</span>",
+                options: [
+                    "Các bạn học sinh đang chơi đá cầu dưới gốc cây.",
+                    "Em và các bạn thường đứng hóng mát dưới bóng râm của cây.",
+                    "Cây bàng rất cao, tán lá xòe rộng như một chiếc ô lớn.",
+                    "Thầy cô trồng cây bàng này từ năm trường mới mở."
+                ],
+                correctText: "Cây bàng rất cao, tán lá xòe rộng như một chiếc ô lớn."
+            },
+            {
+                id: 15,
+                title: "Câu 15. Câu nào bên dưới phù hợp để trả lời cho câu hỏi: <span class='highlight-quote'>'Chú mèo nhà em có bộ lông màu gì?'</span>",
+                options: [
+                    "Chú mèo đang rình bắt chuột ở xó bếp.",
+                    "Chú mèo nhà em có bộ lông màu vàng óng mượt.",
+                    "Chú mèo rất hay kêu meo meo mỗi khi đói bụng.",
+                    "Em rất thích vuốt ve bộ lông của chú mèo."
+                ],
+                correctText: "Chú mèo nhà em có bộ lông màu vàng óng mượt."
+            }
+        ];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        let timerInterval;
+        let totalSeconds = 30 * 60;
+        let startTime, submitTime;
+
+        function startQuiz() {
+            startTime = new Date();
+            document.getElementById("welcome-screen").style.display = "none";
+            document.getElementById("quiz-screen").style.display = "block";
+            document.getElementById("timer-box").style.display = "flex";
+
+            shuffleArray(part1Data);
+            shuffleArray(part2Data);
+            shuffleArray(part3Data);
+
+            part1Data.forEach(q => shuffleArray(q.options));
+            part2Data.forEach(q => {
+                let correctText = q.options[q.correctIndex];
+                shuffleArray(q.options);
+                q.correctIndex = q.options.indexOf(correctText);
+            });
+            part3Data.forEach(q => shuffleArray(q.options));
+
+            renderPart1();
+            renderPart2();
+            renderPart3();
+            startTimer();
+        }
+
+        function renderPart1() {
+            let container = document.getElementById("part1-container");
+            let html = "";
+            part1Data.forEach((q, index) => {
+                html += `<div class="question-card">
+                    <div class="question-title">Câu ${index + 1} (Phần 1): ${q.title.replace(/^Câu \d+\.\s*/, '')}</div>
+                    <div class="options-grid">`;
+                q.options.forEach(opt => {
+                    html += `<label class="option-item"><input type="checkbox" name="p1_q${q.id}" value="${opt}"> ${opt}</label>`;
+                });
+                html += `</div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderPart2() {
+            let container = document.getElementById("part2-container");
+            let html = "";
+            let letters = ["A", "B", "C", "D"];
+            part2Data.forEach((q, index) => {
+                html += `<div class="question-card">
+                    <div class="question-title">Câu ${index + 4} (Phần 2): ${q.title.replace(/^Câu \d+\.\s*/, '')}</div>
+                    <div class="options-list">`;
+                q.options.forEach((opt, optIndex) => {
+                    html += `<label class="option-item"><input type="radio" name="p2_q${q.id}" value="${optIndex}"> <b>${letters[optIndex]}.</b> ${opt}</label>`;
+                });
+                html += `</div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderPart3() {
+            let container = document.getElementById("part3-container");
+            let html = "";
+            part3Data.forEach((q, index) => {
+                html += `<div class="question-card" id="card-p3-${q.id}">
+                    <div class="question-title">Câu ${index + 13} (Phần 3): ${q.title.replace(/^Câu \d+\.\s*/, '')}</div>
+                    <div class="blank-box" id="blank-${q.id}" data-selected="">Chưa chọn phương án</div>
+                    <div class="options-list">`;
+                q.options.forEach((opt) => {
+                    let safeOpt = opt.replace(/'/g, "&#39;");
+                    html += `<div class="part3-option" onclick="selectPart3Option(${q.id}, this, '${safeOpt}')">${opt}</div>`;
+                });
+                html += `</div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function selectPart3Option(qId, element, optText) {
+            let blankBox = document.getElementById(`blank-${qId}`);
+            blankBox.innerText = optText;
+            blankBox.setAttribute("data-selected", optText);
+            
+            let card = document.getElementById(`card-p3-${qId}`);
+            let options = card.getElementsByClassName("part3-option");
+            for (let opt of options) {
+                opt.classList.remove("selected");
+            }
+            element.classList.add("selected");
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                let minutes = Math.floor(totalSeconds / 60);
+                let seconds = totalSeconds % 60;
+                document.getElementById("time-left").innerText = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Đã hết thời gian làm bài! Hệ thống sẽ tự động nộp bài.");
+                    submitQuiz();
+                }
+                totalSeconds--;
+            }, 1000);
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            submitTime = new Date();
+
+            let startStr = startTime.toLocaleTimeString();
+            let submitStr = submitTime.toLocaleTimeString();
+            let diffMs = submitTime - startTime;
+            let diffSecs = Math.floor(diffMs / 1000);
+            let diffMins = Math.floor(diffSecs / 60);
+            let remSecs = diffSecs % 60;
+
+            document.getElementById("start-time-text").innerText = startStr;
+            document.getElementById("submit-time-text").innerText = submitStr;
+            document.getElementById("duration-text").innerText = `${diffMins} phút ${remSecs} giây`;
+
+            let totalRawScore = 0;
+            let maxRawScore = 15; 
+            let historyHtml = "";
+            let overallCount = 1;
+            
+            // Mảng chứa chi tiết để gửi lên Google Sheets
+            let detailsPayload = [];
+            let hoTenHocSinh = "Cẩm Tiên";
+            let maBaiLamID = "BL_" + new Date().getTime(); // Tạo mã bài làm duy nhất theo thời gian
+
+            // 1. Chấm Phần 1
+            part1Data.forEach(q => {
+                let checkboxes = document.querySelectorAll(`input[name="p1_q${q.id}"]:checked`);
+                let selectedValues = Array.from(checkboxes).map(cb => cb.value);
+                
+                let correctCount = q.correct.length;
+                let matched = selectedValues.filter(val => q.correct.includes(val)).length;
+                let wrongSelected = selectedValues.filter(val => !q.correct.includes(val)).length;
+
+                let qScore = Math.max(0, (matched - wrongSelected) / correctCount);
+                totalRawScore += qScore;
+
+                let isFullyCorrect = (matched === correctCount && wrongSelected === 0);
+                let isPartiallyCorrect = (qScore > 0 && !isFullyCorrect);
+
+                let selectedTextDisplay = selectedValues.length > 0 ? selectedValues.join(", ") : "Chưa chọn";
+                let correctTextDisplay = q.correct.join(", ");
+                let badgeClass = isFullyCorrect ? 'badge-correct' : (isPartiallyCorrect ? 'badge-correct' : 'badge-incorrect');
+                let badgeText = isFullyCorrect ? '✓ ĐÚNG' : (isPartiallyCorrect ? `~ ĐÚNG MỘT PHẦN (+${qScore.toFixed(2)}đ)` : '✕ SAI');
+                let cleanQTitle = q.title.replace(/^Câu \d+\.\s*/, '');
+
+                historyHtml += `
+                    <div class="history-card ${isFullyCorrect ? 'correct' : (isPartiallyCorrect ? 'correct' : 'incorrect')}">
+                        <div class="history-q-title">Câu ${overallCount++} (Phần 1): ${cleanQTitle}</div>
+                        <div class="history-detail"><b>Cẩm Tiên chọn:</b> ${selectedTextDisplay}</div>
+                        <div class="history-detail"><b>Đáp án đúng của đề:</b> ${correctTextDisplay}</div>
+                        <div class="history-detail" style="margin-top: 6px;">
+                            <span class="badge ${badgeClass}">${badgeText}</span>
+                        </div>
+                    </div>
+                `;
+
+                // Đẩy vào mảng chi tiết
+                detailsPayload.push({
+                    tenCauHoi: `Phần 1 - ${cleanQTitle}`,
+                    dapAnDung: correctTextDisplay,
+                    thiSinhChon: selectedTextDisplay,
+                    danhGia: isFullyCorrect ? 'Đúng' : (isPartiallyCorrect ? 'Đúng một phần' : 'Sai'),
+                    diemCau: parseFloat(qScore.toFixed(2))
+                });
+            });
+
+            // 2. Chấm Phần 2
+            let letters = ["A", "B", "C", "D"];
+            part2Data.forEach(q => {
+                let radio = document.querySelector(`input[name="p2_q${q.id}"]:checked`);
+                let selectedIndex = radio ? parseInt(radio.value) : -1;
+                let isCorrect = selectedIndex === q.correctIndex;
+                let scoreVal = 0;
+                if (isCorrect) {
+                    totalRawScore += 1;
+                    scoreVal = 1;
+                }
+
+                let selectedTextDisplay = selectedIndex !== -1 ? `${letters[selectedIndex]}. ${q.options[selectedIndex]}` : "Chưa chọn";
+                let correctTextDisplay = `${letters[q.correctIndex]}. ${q.options[q.correctIndex]}`;
+                let cleanQTitle = q.title.replace(/^Câu \d+\.\s*/, '');
+
+                historyHtml += `
+                    <div class="history-card ${isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="history-q-title">Câu ${overallCount++} (Phần 2): ${cleanQTitle}</div>
+                        <div class="history-detail"><b>Cẩm Tiên chọn:</b> ${selectedTextDisplay}</div>
+                        <div class="history-detail"><b>Đáp án đúng của đề:</b> ${correctTextDisplay}</div>
+                        <div class="history-detail" style="margin-top: 6px;">
+                            <span class="badge ${isCorrect ? 'badge-correct' : 'badge-incorrect'}">${isCorrect ? '✓ ĐÚNG' : '✕ SAI'}</span>
+                        </div>
+                    </div>
+                `;
+
+                detailsPayload.push({
+                    tenCauHoi: `Phần 2 - ${cleanQTitle}`,
+                    dapAnDung: correctTextDisplay,
+                    thiSinhChon: selectedTextDisplay,
+                    danhGia: isCorrect ? 'Đúng' : 'Sai',
+                    diemCau: scoreVal
+                });
+            });
+
+            // 3. Chấm Phần 3
+            part3Data.forEach(q => {
+                let blankBox = document.getElementById(`blank-${q.id}`);
+                let selectedText = blankBox.getAttribute("data-selected");
+                let isCorrect = selectedText === q.correctText;
+                let scoreVal = 0;
+                if (isCorrect) {
+                    totalRawScore += 1;
+                    scoreVal = 1;
+                }
+
+                let selectedTextDisplay = selectedText ? selectedText : "Chưa chọn";
+                let cleanQTitle = q.title.replace(/^Câu \d+\.\s*/, '');
+
+                historyHtml += `
+                    <div class="history-card ${isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="history-q-title">Câu ${overallCount++} (Phần 3): ${cleanQTitle}</div>
+                        <div class="history-detail"><b>Cẩm Tiên chọn:</b> ${selectedTextDisplay}</div>
+                        <div class="history-detail"><b>Đáp án đúng của đề:</b> ${q.correctText}</div>
+                        <div class="history-detail" style="margin-top: 6px;">
+                            <span class="badge ${isCorrect ? 'badge-correct' : 'badge-incorrect'}">${isCorrect ? '✓ ĐÚNG' : '✕ SAI'}</span>
+                        </div>
+                    </div>
+                `;
+
+                detailsPayload.push({
+                    tenCauHoi: `Phần 3 - ${cleanQTitle}`,
+                    dapAnDung: q.correctText,
+                    thiSinhChon: selectedTextDisplay,
+                    danhGia: isCorrect ? 'Đúng' : 'Sai',
+                    diemCau: scoreVal
+                });
+            });
+
+            let finalScore10 = (totalRawScore / maxRawScore) * 10;
+
+            document.getElementById("res-score").innerText = `Điểm số: ${finalScore10.toFixed(1)} / 10.0`;
+            document.getElementById("history-details-container").innerHTML = historyHtml;
+
+            document.getElementById("quiz-screen").style.display = "none";
+            document.getElementById("timer-box").style.display = "none";
+            document.getElementById("result-screen").style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // GÓI DỮ LIỆU ĐỂ GỬI LÊN GOOGLE SHEETS
+            let payload = {
+                maBaiLam: maBaiLamID,
+                hoTen: hoTenHocSinh,
+                gioVaoLam: startStr,
+                gioNopBai: submitStr,
+                thoiGianLamBai: `${diffMins} phút ${remSecs} giây`,
+                diemTongKet: parseFloat(finalScore10.toFixed(1)),
+                diemTho: parseFloat(totalRawScore.toFixed(2)),
+                chiTietCauHoi: detailsPayload
+            };
+
+            // THAY LINK DƯỚI ĐÂY BẰNG LINK ỨNG DỤNG WEB BẠN VỪA LẤY Ở BƯỚC 3
+            let googleScriptURL = "https://script.google.com/macros/s/AKfycbxuJIVaqkaIRAsWmwWjgWTZnnVBzGR45kTyJ7B6qqU4oKiTnS1vOhaNKaYgCINEycvVZQ/exec";
+
+            if (googleScriptURL && googleScriptURL !== "DÁN_LINK_WEB_APP_CỦA_BẠN_VÀO_ĐÂY") {
+                fetch(googleScriptURL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }).then(() => {
+                    console.log("Đã gửi kết quả bài làm lên Google Sheets thành công!");
+                }).catch(error => {
+                    console.error("Lỗi khi gửi dữ liệu:", error);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
